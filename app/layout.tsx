@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DuoApp - 2명씩 팀을 이루어 새로운 만남을 시작하세요",
-  description: "DuoApp은 2명씩 팀을 이루어(2:2) 다른 팀과 매칭되는 소셜 앱입니다. 같은 지역의 팀과 매칭되어 새로운 만남을 시작해보세요.",
+  title: "Duo",
+  description: "Duo는 2명씩 듀오를 이루어(2:2) 다른 듀오와 매칭되는 소셜 앱입니다.",
 };
 
 export default function RootLayout({
