@@ -88,7 +88,7 @@ export default function PreRegister() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 sm:px-10 py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg whitespace-nowrap text-white disabled:bg-gray-400"
+              className="px-6 sm:px-10 py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg whitespace-nowrap text-white disabled:bg-gray-400 cursor-pointer"
               style={{ backgroundColor: isSubmitting ? '#9ca3af' : '#ea7e94' }}
             >
               {isSubmitting ? '처리 중...' : '알림 받기'}
