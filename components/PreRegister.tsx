@@ -14,14 +14,27 @@ export default function PreRegister() {
     setIsSubmitting(true);
 
     try {
-      // ⚠️ 구글 앱스 스크립트 웹 앱 URL을 여기에 넣으세요
-      const GAS_URL = process.env.NEXT_PUBLIC_GAS_URL || '';
-
-      await fetch(GAS_URL, {
+      // Discord webhook을 통한 사전 예약 등록
+      const discordResponse = fetch('/api/discord', {
         method: 'POST',
-        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ email }),
       });
+
+      // Google Apps Script를 통한 사전 예약 등록
+      const GAS_URL = process.env.NEXT_PUBLIC_GAS_URL || '';
+      const gasPromise = GAS_URL 
+        ? fetch(GAS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ email }),
+          })
+        : Promise.resolve();
+
+      // 두 요청을 병렬로 실행
+      await Promise.all([discordResponse, gasPromise]);
 
       setIsSubmitted(true);
       setEmail('');
