@@ -24,13 +24,19 @@ export default function PreRegister() {
       const phoneNumberString = String(phoneNumber);
       
       // Discord webhook을 통한 사전 예약 등록
-      const discordResponse = fetch('/api/discord', {
+      const discordResponse = await fetch('/api/discord', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ phoneNumber: phoneNumberString }),
       });
+
+      // Discord 응답 확인
+      if (!discordResponse.ok) {
+        const errorData = await discordResponse.json().catch(() => ({ error: 'Discord 전송 실패' }));
+        console.error('Discord API 오류:', errorData);
+      }
 
       // Google Apps Script를 통한 사전 예약 등록
       const GAS_URL = process.env.NEXT_PUBLIC_GAS_URL || '';
@@ -42,8 +48,8 @@ export default function PreRegister() {
           })
         : Promise.resolve();
 
-      // 두 요청을 병렬로 실행
-      await Promise.all([discordResponse, gasPromise]);
+      // 두 요청을 병렬로 실행 (Discord는 이미 완료되었으므로 GAS만 대기)
+      await gasPromise;
 
       setIsSubmitted(true);
       setPhoneNumber('');
