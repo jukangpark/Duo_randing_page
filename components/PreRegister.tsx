@@ -6,6 +6,7 @@ export default function PreRegister() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
 
   // 전화번호 입력 핸들러 - 숫자만 허용
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,13 +16,19 @@ export default function PreRegister() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmitting || !agreedToPrivacy) return;
+
+    if (!agreedToPrivacy) {
+      alert('개인정보 수집 및 이용에 동의해주세요.');
+      return;
+    }
 
     setIsSubmitting(true);
 
     try {
       // 전화번호를 문자열로 명시적으로 변환 (엑셀에서 앞의 0이 사라지지 않도록)
       const phoneNumberString = String(phoneNumber);
+      const agreedAt = new Date().toISOString();
       
       // Discord webhook을 통한 사전 예약 등록
       const discordResponse = await fetch('/api/discord', {
@@ -29,7 +36,11 @@ export default function PreRegister() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ phoneNumber: phoneNumberString }),
+        body: JSON.stringify({ 
+          phoneNumber: phoneNumberString,
+          agreedToPrivacy: true,
+          agreedAt: agreedAt,
+        }),
       });
 
       // Discord 응답 확인
@@ -44,7 +55,11 @@ export default function PreRegister() {
         ? fetch(GAS_URL, {
             method: 'POST',
             mode: 'no-cors',
-            body: JSON.stringify({ phoneNumber: phoneNumberString }),
+            body: JSON.stringify({ 
+              phoneNumber: phoneNumberString,
+              agreedToPrivacy: true,
+              agreedAt: agreedAt,
+            }),
           })
         : Promise.resolve();
 
@@ -53,6 +68,7 @@ export default function PreRegister() {
 
       setIsSubmitted(true);
       setPhoneNumber('');
+      setAgreedToPrivacy(false);
     } catch (error) {
       console.error('제출 에러:', error);
       alert('오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
@@ -125,13 +141,47 @@ export default function PreRegister() {
             />
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="px-6 sm:px-10 py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg whitespace-nowrap text-white disabled:bg-gray-400 cursor-pointer"
-              style={{ backgroundColor: isSubmitting ? '#9ca3af' : '#ea7e94' }}
+              disabled={isSubmitting || !agreedToPrivacy}
+              className="px-6 sm:px-10 py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg whitespace-nowrap text-white disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
+              style={{ backgroundColor: (isSubmitting || !agreedToPrivacy) ? '#9ca3af' : '#ea7e94' }}
             >
               {isSubmitting ? '처리 중...' : '알림 받기'}
             </button>
           </form>
+
+          {/* 개인정보 수집 및 이용 동의 */}
+          <div className="mt-6 max-w-xl mx-auto">
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={agreedToPrivacy}
+                onChange={(e) => setAgreedToPrivacy(e.target.checked)}
+                className="mt-1 w-5 h-5 rounded border-gray-300 text-[#ea7e94] focus:ring-[#ea7e94] cursor-pointer"
+                required
+              />
+              <div className="flex-1 text-left">
+                <span className="text-sm font-semibold text-gray-900">
+                  개인정보 수집 및 이용 동의 <span className="text-[#ea7e94]">(필수)</span>
+                </span>
+                <div className="mt-2 text-xs text-gray-600 space-y-1">
+                  <div>• <strong>수집 목적:</strong> Duo 사전 예약 알림 및 이벤트 혜택(코인) 지급</div>
+                  <div>• <strong>수집 항목:</strong> 휴대전화 번호</div>
+                  <div>• <strong>보유 및 이용 기간:</strong> 서비스 오픈 후 1개월까지 (혹은 목적 달성 시까지)</div>
+                  <div>• <strong>동의 거부 권리:</strong> 귀하는 동의를 거부할 권리가 있으며, 거부 시 사전 예약 혜택을 받으실 수 없습니다.</div>
+                </div>
+                <div className="mt-2">
+                  <a
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-[#ea7e94] hover:underline"
+                  >
+                    개인정보 처리방침 확인
+                  </a>
+                </div>
+              </div>
+            </label>
+          </div>
           
           {isSubmitted && (
             <div className="mt-8 flex items-center justify-center gap-2 text-[#ea7e94] animate-fade-in">

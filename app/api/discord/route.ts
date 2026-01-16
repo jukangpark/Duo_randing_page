@@ -2,11 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const { phoneNumber } = await request.json();
+    const { phoneNumber, agreedToPrivacy, agreedAt } = await request.json();
 
     if (!phoneNumber) {
       return NextResponse.json(
         { error: '전화번호가 필요합니다.' },
+        { status: 400 }
+      );
+    }
+
+    if (!agreedToPrivacy) {
+      return NextResponse.json(
+        { error: '개인정보 수집 및 이용에 동의해주세요.' },
         { status: 400 }
       );
     }
@@ -28,7 +35,7 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        content: `🎉 새로운 사전 예약 등록!\n**전화번호:** ${phoneNumber}\n**시간:** ${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}`,
+        content: `🎉 새로운 사전 예약 등록!\n**전화번호:** ${phoneNumber}\n**개인정보 동의:** ${agreedToPrivacy ? '동의' : '미동의'}\n**동의 일시:** ${agreedAt ? new Date(agreedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }) : 'N/A'}\n**등록 시간:** ${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}`,
         username: 'Duo 사전예약 봇',
       }),
     });
