@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json();
+    const { phoneNumber } = await request.json();
 
-    if (!email) {
+    if (!phoneNumber) {
       return NextResponse.json(
-        { error: '이메일이 필요합니다.' },
+        { error: '전화번호가 필요합니다.' },
         { status: 400 }
       );
     }
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        content: `🎉 새로운 사전 예약 등록!\n**이메일:** ${email}\n**시간:** ${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}`,
+        content: `🎉 새로운 사전 예약 등록!\n**전화번호:** ${phoneNumber}\n**시간:** ${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}`,
         username: 'Duo 사전예약 봇',
       }),
     });
