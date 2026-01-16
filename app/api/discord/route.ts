@@ -22,29 +22,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let webhookUrl = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL;
+    const webhookUrl = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL;
 
     if (!webhookUrl) {
       console.error('❌ NEXT_PUBLIC_DISCORD_WEBHOOK_URL 환경변수가 설정되지 않았습니다.');
       return NextResponse.json(
         { error: '서버 설정 오류: Discord webhook URL이 없습니다.' },
-        { status: 500 }
-      );
-    }
-
-    // URL에 프로토콜이 없으면 https:// 추가
-    webhookUrl = webhookUrl.trim();
-    if (!webhookUrl.startsWith('http://') && !webhookUrl.startsWith('https://')) {
-      webhookUrl = 'https://' + webhookUrl;
-    }
-
-    // URL 검증
-    try {
-      new URL(webhookUrl);
-    } catch (urlError) {
-      console.error('❌ 잘못된 Discord webhook URL 형식:', webhookUrl);
-      return NextResponse.json(
-        { error: '서버 설정 오류: Discord webhook URL 형식이 올바르지 않습니다.' },
         { status: 500 }
       );
     }
