@@ -9,7 +9,7 @@ export default function PrivacyPolicyPage() {
         <div className="prose prose-sm max-w-none text-gray-700 space-y-6">
           <section>
             <p className="text-sm text-gray-600 mb-6">
-              <strong>Duo</strong>(이하 "회사" 또는 "서비스")는 개인정보보호법, 정보통신망 이용촉진 및 정보보호 등에 관한 법률 등 관련 법령을 준수하며, 이용자의 개인정보 보호를 매우 중요하게 생각합니다.
+              <strong>Duo</strong>(이하 &quot;회사&quot; 또는 &quot;서비스&quot;)는 개인정보보호법, 정보통신망 이용촉진 및 정보보호 등에 관한 법률 등 관련 법령을 준수하며, 이용자의 개인정보 보호를 매우 중요하게 생각합니다.
             </p>
             <p className="text-sm text-gray-600 mb-6">
               본 개인정보 처리방침은 회사가 제공하는 서비스 이용 시 수집되는 개인정보의 항목, 수집 및 이용 목적, 보유 및 이용 기간, 개인정보의 제3자 제공, 개인정보 처리 위탁, 이용자의 권리 및 행사 방법 등에 관한 사항을 규정함을 목적으로 합니다.
